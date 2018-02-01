@@ -1,0 +1,9 @@
+*.csv
+*.xlsx
+*.pickle
+*.pkl
+*.pyc
+*.ipynb_checkpoints*
+.DS_Store
+secrets/
+local.config
