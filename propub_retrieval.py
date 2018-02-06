@@ -4,7 +4,7 @@ import pandas as pd
 import json
 import sqlite3
 
-from secrets import config
+from secret import local_config
 
 
 base_vote_url = 'https://api.propublica.org/congress/v1/{chamber}/\
