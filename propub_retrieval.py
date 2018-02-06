@@ -4,7 +4,7 @@ import pandas as pd
 import json
 import sqlite3
 
-from secrets import local_config
+from secrets import config
 
 
 base_vote_url = 'https://api.propublica.org/congress/v1/{chamber}/\
@@ -19,7 +19,7 @@ for year in np.arange(1989,2019):
 
 full_results = []
 def get_and_save_votes(url,full_results):
-    r = requests.get(url, headers=local_config.api_params)
+    r = requests.get(url, headers=config.api_params)
     full_results = full_results.append(r)
 
 def rep_to_json(resp,fail_log):
@@ -174,9 +174,9 @@ del final_df['republican']
 del final_df['independent']
 del final_df['total']
 
-conn = sqlite3.connect(local_config.db_params['database'])
+conn = sqlite3.connect(config.db_params['database'])
 
-final_df.to_sql(local_config.db_params['table_overview'], conn, if_exists='replace')
+final_df.to_sql(config.db_params['table_overview'], conn, if_exists='replace')
 
 ### Specific Votes
 
@@ -200,12 +200,12 @@ def request_vote_info(vote_params):
                               chamber='senate',
                               session=vote_params['session'],
                               roll_call=vote_params['roll_call'])
-    r = requests.get(url, headers=local_config.api_params)
+    r = requests.get(url, headers=config.api_params)
     try:
         if r.json()['message'] == 'Endpoint request timed out':
-            r = requests.get(url, headers=local_config.api_params, timeout=10)
+            r = requests.get(url, headers=config.api_params, timeout=10)
         elif r.json()['status'] == 'Internal Server Error':
-            r = requests.get(url, headers=local_config.api_params, timeout=10)
+            r = requests.get(url, headers=config.api_params, timeout=10)
         else:
             return r
     except:
@@ -263,14 +263,14 @@ for i, row in enumerate(positions['positions']):
     pos_row['roll_call'] = roll
     pos_final = pd.concat([pos_final,pos_row])
     if i % 1000 == 0:
-        pos_final.to_csv('{}/positions_{}.csv'.format(local_congig.temp_storage,i))
+        pos_final.to_csv('{}/positions_{}.csv'.format(config.temp_storage,i))
         print(i)
         pos_final = pd.DataFrame()
 
 print(len(pos_final))
 for csv in ['positions_0.csv','positions_1000.csv','positions_2000.csv','positions_3000.csv','positions_4000.csv']:
     try:
-        newest_csv = pd.read_csv('{}/{}'.format(local_congig.temp_storage,csv), engine='python')
+        newest_csv = pd.read_csv('{}/{}'.format(config.temp_storage,csv), engine='python')
         print(len(newest_csv))
         pos_final = pos_final.append(newest_csv)
     except:
@@ -278,6 +278,6 @@ for csv in ['positions_0.csv','positions_1000.csv','positions_2000.csv','positio
 print('final length{}'.format(len(pos_final)))
 del pos_final['Unnamed: 0']
 
-conn = sqlite3.connect(local_config.db_params['database'])
+conn = sqlite3.connect(config.db_params['database'])
 
-pos_final.to_sql(local_config.db_params['table_individual_votes'], conn, if_exists='append')
+pos_final.to_sql(config.db_params['table_individual_votes'], conn, if_exists='append')
