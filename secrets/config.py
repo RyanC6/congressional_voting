@@ -1,0 +1,1 @@
+from local_config import api_params, db_params, temp_storage
