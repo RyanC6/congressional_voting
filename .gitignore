@@ -6,4 +6,4 @@
 *.ipynb_checkpoints*
 .DS_Store
 secrets/
-local.config
+local_config.py
