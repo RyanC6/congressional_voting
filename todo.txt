@@ -1,0 +1,6 @@
+# Infastructure
+* Verify API update viability
+
+#Analysis
+* Track frequency of party line voting over time (H: increases)
+* Changes in actions running up to elections (pres and congressional)
